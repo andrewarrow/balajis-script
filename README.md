@@ -16,3 +16,25 @@ In more detail:
 
 4) Write this up as a README.md. Put script + README into a GitHub repo and post the link below. Prize remains open for 7 days.
 ```
+
+Sample Output:
+
+```
+{"Body":"Yes \"storm\" seems perfect!","ImageURLs":null}
+{"Body":"18% and yes Raj stole this mode, but now we know it works!\n\nGet in before the greedy whales !","ImageURLs":[]}
+{"Body":"Yes! Self-comparison is the only way.","ImageURLs":null}
+{"Body":"Anything Vietnamese- bun bo nam bo for example 👍🤤","ImageURLs":null}
+{"Body":"I’ve been on my way :( ","ImageURLs":null}
+{"Body":"I wasn't going to post it\nbut who'd like to see a pic of the tooth (warning bloody) that was giving me such pain for the last few days\n?","ImageURLs":[]}
+{"Body":"You must be set at 99% percent because I want to give you everything.  ","ImageURLs":null}
+{"Body":"Nice! wanted to let you know that I DMed you just in case you wasn't notified, I noticed that I don't get notified by email. - DJ Paul w/ 36 Mafia","ImageURLs":null}
+{"Body":"","ImageURLs":null}
+{"Body":"Canadians are hilarious, what could go wrong?","ImageURLs":null}
+{"Body":"😃","ImageURLs":null}
+{"Body":"I respect the fuck out of everyone here who has a shitty username 💯 like bro you knew you could make it without being named @sex 😂","ImageURLs":[]}
+{"Body":"Breakfast Mukbang \n\n\nCredits: Pambansang Kolokoy 💗💗","ImageURLs":[]}
+{"Body":"","ImageURLs":null}
+{"Body":"🙏 Thank you very much @RajLahoti 🏆","ImageURLs":[]}
+{"Body":"That’s a good one thanks 🙏 ","ImageURLs":null}
+```
+
