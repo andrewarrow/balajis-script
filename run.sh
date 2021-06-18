@@ -10,5 +10,7 @@ git clone https://github.com/andrewarrow/balajis-script.git
 cd balajis-script
 go mod vendor
 go build
-./balajis /home/ec2-user/.config/bitclout/bitclout/MAINNET/badgerdb
+copy -r /home/ec2-user/.config/bitclout/bitclout/MAINNET/badgerdb /home/ec2-user/acopy
+rm /home/ec2-user/acopy/badgerdb/*.mem
+./balajis /home/ec2-user/acopy/badgerdb
 
