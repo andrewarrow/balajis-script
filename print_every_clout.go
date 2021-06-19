@@ -6,16 +6,22 @@ import (
 	"fmt"
 
 	"github.com/dgraph-io/badger/v3"
+	"github.com/go-redis/redis/v8"
 )
 
 func PrintEveryClout(dir string) {
 	db, _ := badger.Open(badger.DefaultOptions(dir))
 	defer db.Close()
 	PrefixPostHashToPostEntry := byte(17)
-	EnumerateKeysForPrefix(db, []byte{PrefixPostHashToPostEntry})
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+	EnumerateKeysForPrefix(rdb, db, []byte{PrefixPostHashToPostEntry})
 }
 
-func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
+func EnumerateKeysForPrefix(rdb *redis.Client, db *badger.DB, dbPrefix []byte) {
 
 	db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -29,6 +35,18 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			post := &PostEntry{}
 			gob.NewDecoder(bytes.NewReader(val)).Decode(post)
 			fmt.Println(string(post.Body))
+			values := map[string]interface{}{}
+			values["PostHash"] = post.PostHash
+			values["PosterPublicKey"] = post.PosterPublicKey
+			values["LikeCount"] = post.LikeCount
+			values["RecloutCount"] = post.RecloutCount
+			values["CommentCount"] = post.CommentCount
+			values["DiamondCount"] = post.DiamondCount
+			values["RecloutedPostHash"] = post.RecloutedPostHash
+			values["TimestampNanos"] = post.TimestampNanos
+			values["Timestamp"] = post.TimestampNanos / 1000000000
+			values["ParentStakeID"] = post.ParentStakeID
+			AddToRedisStream(rdb, values)
 		}
 		return nil
 	})
