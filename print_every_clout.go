@@ -40,6 +40,7 @@ func EnumerateKeysForPrefix(rdb *redis.Client, db *badger.DB, dbPrefix []byte) {
 			values["PosterPublicKey"] = post.PosterPublicKey
 			values["LikeCount"] = post.LikeCount
 			values["RecloutCount"] = post.RecloutCount
+			values["Body"] = string(post.Body)
 			values["CommentCount"] = post.CommentCount
 			values["DiamondCount"] = post.DiamondCount
 			values["RecloutedPostHash"] = post.RecloutedPostHash
