@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
-	"fmt"
 
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/dgraph-io/badger/v3"
@@ -20,7 +19,7 @@ func HandleFollower2Followed(db *badger.DB, follower, followed []byte) {
 	if Lookup[pub58ed] == "" {
 		Lookup[pub58ed] = LookupUsername(db, followed)
 	}
-	fmt.Println("HandleFollower2Followed", Lookup[pub58er], Lookup[pub58ed])
+	//fmt.Println("HandleFollower2Followed", Lookup[pub58er], Lookup[pub58ed])
 }
 func HandleFollowed2Follower(db *badger.DB, followed, follower []byte) {
 	pub58ed := base58.Encode(followed)
@@ -31,7 +30,7 @@ func HandleFollowed2Follower(db *badger.DB, followed, follower []byte) {
 	if Lookup[pub58er] == "" {
 		Lookup[pub58er] = LookupUsername(db, follower)
 	}
-	fmt.Println("HandleFollowed2Follower", Lookup[pub58ed], Lookup[pub58er])
+	//fmt.Println("HandleFollowed2Follower", Lookup[pub58ed], Lookup[pub58er])
 }
 
 func LookupUsername(db *badger.DB, pkid []byte) string {

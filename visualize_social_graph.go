@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"sort"
+
 	"github.com/dgraph-io/badger/v3"
 )
 
@@ -11,6 +14,22 @@ func VisualizeSocialGraph(dir string) {
 	PrefixFollowedPKIDToFollowerPKID := byte(29)
 	Follower2Followed(db, []byte{PrefixFollowerPKIDToFollowedPKID})
 	Followed2Follower(db, []byte{PrefixFollowedPKIDToFollowerPKID})
+
+	// digraph regexp {
+	list := []string{}
+	for k, v := range Lookup {
+		if v == "404" {
+			continue
+		}
+		list = append(list, k)
+	}
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i] < list[j]
+	})
+	for i, item := range list {
+		//n0 [label="regexp"];
+		fmt.Printf("n%d [label=\"%s\"];\n", i, Lookup[item])
+	}
 }
 
 func Followed2Follower(db *badger.DB, dbPrefix []byte) {
