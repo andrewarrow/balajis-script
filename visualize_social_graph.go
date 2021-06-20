@@ -29,7 +29,7 @@ func Followed2Follower(db *badger.DB, dbPrefix []byte) {
 			//data := bytes.NewReader(val)
 			followed := key[1:34]
 			follower := key[34:]
-			HandleFollowed2Follower(followed, follower)
+			HandleFollowed2Follower(db, followed, follower)
 		}
 		return nil
 	})
@@ -51,7 +51,7 @@ func Follower2Followed(db *badger.DB, dbPrefix []byte) {
 			//data := bytes.NewReader(val)
 			follower := key[1:34]
 			followed := key[34:]
-			HandleFollower2Followed(follower, followed)
+			HandleFollower2Followed(db, follower, followed)
 		}
 		return nil
 	})
@@ -89,4 +89,25 @@ type PostEntry struct {
 	CommentCount             uint64
 	IsPinned                 bool
 	PostExtraData            map[string][]byte
+}
+
+type CoinEntry struct {
+	CreatorBasisPoints      uint64
+	BitCloutLockedNanos     uint64
+	NumberOfHolders         uint64
+	CoinsInCirculationNanos uint64
+	CoinWatermarkNanos      uint64
+}
+
+type ProfileEntry struct {
+	PublicKey   []byte
+	Username    []byte
+	Description []byte
+	ProfilePic  []byte
+	IsHidden    bool
+	CoinEntry
+	isDeleted                bool
+	StakeMultipleBasisPoints uint64
+	StakeEntry               *StakeEntry
+	stakeStats               *StakeEntryStats
 }
