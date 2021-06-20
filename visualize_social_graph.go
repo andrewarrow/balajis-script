@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"sort"
+	"strings"
 
 	"github.com/dgraph-io/badger/v3"
 )
@@ -26,18 +28,22 @@ func VisualizeSocialGraph(dir string) {
 		return list[i] < list[j]
 	})
 	nodeMap := map[string]int{}
-	fmt.Println("digraph regexp {")
+
+	buff := []string{}
+	buff = append(buff, "digraph regexp {")
 	for i, item := range list {
-		fmt.Printf(" n%d [label=\"%s\"];\n", i, Lookup[item])
+		buff = append(buff, fmt.Sprintf(" n%d [label=\"%s\"];", i, Lookup[item]))
 		nodeMap[item] = i
 	}
 	for k, v := range Follower2Followed {
-		fmt.Printf(" n%d -> n%d;\n", nodeMap[k], nodeMap[v])
+		buff = append(buff, fmt.Sprintf(" n%d -> n%d;", nodeMap[k], nodeMap[v]))
 	}
 	for k, v := range Followed2Follower {
-		fmt.Printf(" n%d -> n%d;\n", nodeMap[v], nodeMap[k])
+		buff = append(buff, fmt.Sprintf(" n%d -> n%d;", nodeMap[v], nodeMap[k]))
 	}
-	fmt.Println("}")
+	buff = append(buff, "}")
+
+	ioutil.WriteFile("clout.gv", []byte(strings.Join(buff, "\n")), 0755)
 }
 
 func ListFollowed2Follower(db *badger.DB, dbPrefix []byte) {
