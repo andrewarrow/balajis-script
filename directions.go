@@ -23,7 +23,15 @@ func HandleFollower2Followed(db *badger.DB, follower, followed []byte) {
 	fmt.Println("HandleFollower2Followed", Lookup[pub58er], Lookup[pub58ed])
 }
 func HandleFollowed2Follower(db *badger.DB, followed, follower []byte) {
-	fmt.Println("HandleFollowed2Follower", len(followed), len(follower))
+	pub58ed := base58.Encode(followed)
+	if Lookup[pub58ed] == "" {
+		Lookup[pub58ed] = LookupUsername(db, followed)
+	}
+	pub58er := base58.Encode(follower)
+	if Lookup[pub58er] == "" {
+		Lookup[pub58er] = LookupUsername(db, follower)
+	}
+	fmt.Println("HandleFollowed2Follower", Lookup[pub58ed], Lookup[pub58er])
 }
 
 func LookupUsername(db *badger.DB, pkid []byte) string {
