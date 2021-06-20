@@ -12,10 +12,9 @@ func VisualizeSocialGraph(dir string) {
 	defer db.Close()
 	PrefixFollowerPKIDToFollowedPKID := byte(28)
 	PrefixFollowedPKIDToFollowerPKID := byte(29)
-	Follower2Followed(db, []byte{PrefixFollowerPKIDToFollowedPKID})
-	Followed2Follower(db, []byte{PrefixFollowedPKIDToFollowerPKID})
+	ListFollower2Followed(db, []byte{PrefixFollowerPKIDToFollowedPKID})
+	ListFollowed2Follower(db, []byte{PrefixFollowedPKIDToFollowerPKID})
 
-	// digraph regexp {
 	list := []string{}
 	for k, v := range Lookup {
 		if v == "404" {
@@ -26,13 +25,22 @@ func VisualizeSocialGraph(dir string) {
 	sort.SliceStable(list, func(i, j int) bool {
 		return list[i] < list[j]
 	})
+	nodeMap := map[string]int{}
+	fmt.Println("digraph regexp {")
 	for i, item := range list {
-		//n0 [label="regexp"];
-		fmt.Printf("n%d [label=\"%s\"];\n", i, Lookup[item])
+		fmt.Printf(" n%d [label=\"%s\"];\n", i, Lookup[item])
+		nodeMap[item] = i
 	}
+	for k, v := range Follower2Followed {
+		fmt.Printf(" n%d -> n%d;\n", nodeMap[k], nodeMap[v])
+	}
+	for k, v := range Followed2Follower {
+		fmt.Printf(" n%d -> n%d;\n", nodeMap[v], nodeMap[k])
+	}
+	fmt.Println("}")
 }
 
-func Followed2Follower(db *badger.DB, dbPrefix []byte) {
+func ListFollowed2Follower(db *badger.DB, dbPrefix []byte) {
 
 	db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -54,7 +62,7 @@ func Followed2Follower(db *badger.DB, dbPrefix []byte) {
 	})
 
 }
-func Follower2Followed(db *badger.DB, dbPrefix []byte) {
+func ListFollower2Followed(db *badger.DB, dbPrefix []byte) {
 
 	db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions

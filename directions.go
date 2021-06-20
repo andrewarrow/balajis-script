@@ -9,6 +9,8 @@ import (
 )
 
 var Lookup = map[string]string{}
+var Follower2Followed = map[string]string{}
+var Followed2Follower = map[string]string{}
 
 func HandleFollower2Followed(db *badger.DB, follower, followed []byte) {
 	pub58er := base58.Encode(follower)
@@ -19,6 +21,7 @@ func HandleFollower2Followed(db *badger.DB, follower, followed []byte) {
 	if Lookup[pub58ed] == "" {
 		Lookup[pub58ed] = LookupUsername(db, followed)
 	}
+	Follower2Followed[pub58er] = pub58ed
 	//fmt.Println("HandleFollower2Followed", Lookup[pub58er], Lookup[pub58ed])
 }
 func HandleFollowed2Follower(db *badger.DB, followed, follower []byte) {
@@ -30,6 +33,7 @@ func HandleFollowed2Follower(db *badger.DB, followed, follower []byte) {
 	if Lookup[pub58er] == "" {
 		Lookup[pub58er] = LookupUsername(db, follower)
 	}
+	Followed2Follower[pub58ed] = pub58er
 	//fmt.Println("HandleFollowed2Follower", Lookup[pub58ed], Lookup[pub58er])
 }
 
