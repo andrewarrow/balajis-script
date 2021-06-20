@@ -1,21 +1,19 @@
 package main
 
 import (
-	"bytes"
-	"encoding/gob"
-	"fmt"
-
 	"github.com/dgraph-io/badger/v3"
 )
 
-func PrintEveryClout(dir string) {
+func VisualizeSocialGraph(dir string) {
 	db, _ := badger.Open(badger.DefaultOptions(dir))
 	defer db.Close()
-	PrefixPostHashToPostEntry := byte(17)
-	EnumerateKeysForPrefix(db, []byte{PrefixPostHashToPostEntry})
+	PrefixFollowerPKIDToFollowedPKID := byte(28)
+	PrefixFollowedPKIDToFollowerPKID := byte(29)
+	Follower2Followed(db, []byte{PrefixFollowerPKIDToFollowedPKID})
+	Followed2Follower(db, []byte{PrefixFollowedPKIDToFollowerPKID})
 }
 
-func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
+func Followed2Follower(db *badger.DB, dbPrefix []byte) {
 
 	db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -24,11 +22,36 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 		prefix := dbPrefix
 
 		for nodeIterator.Seek(prefix); nodeIterator.ValidForPrefix(prefix); nodeIterator.Next() {
-			val, _ := nodeIterator.Item().ValueCopy(nil)
+			key := nodeIterator.Item().Key()
 
-			post := &PostEntry{}
-			gob.NewDecoder(bytes.NewReader(val)).Decode(post)
-			fmt.Println(string(post.Body))
+			//val, _ := nodeIterator.Item().ValueCopy(nil)
+
+			//data := bytes.NewReader(val)
+			followed := key[1:34]
+			follower := key[34:]
+			HandleFollowed2Follower(followed, follower)
+		}
+		return nil
+	})
+
+}
+func Follower2Followed(db *badger.DB, dbPrefix []byte) {
+
+	db.View(func(txn *badger.Txn) error {
+		opts := badger.DefaultIteratorOptions
+		nodeIterator := txn.NewIterator(opts)
+		defer nodeIterator.Close()
+		prefix := dbPrefix
+
+		for nodeIterator.Seek(prefix); nodeIterator.ValidForPrefix(prefix); nodeIterator.Next() {
+			key := nodeIterator.Item().Key()
+
+			//val, _ := nodeIterator.Item().ValueCopy(nil)
+
+			//data := bytes.NewReader(val)
+			follower := key[1:34]
+			followed := key[34:]
+			HandleFollower2Followed(follower, followed)
 		}
 		return nil
 	})
